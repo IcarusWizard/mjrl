@@ -48,6 +48,15 @@ SEED = job_data['seed']
 del(job_data['seed'])
 if 'act_repeat' not in job_data.keys(): job_data['act_repeat'] = 1
 
+import random
+def setup_seed(seed=1024):
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+    torch.backends.cudnn.deterministic = True
+setup_seed(SEED)
+
 # ===============================================================================
 # Construct environment and model
 # ===============================================================================
