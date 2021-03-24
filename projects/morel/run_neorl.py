@@ -409,12 +409,9 @@ if __name__ == '__main__':
         analysis = tune.run(
             launch,
             config={
-                # "pessimism_coef" : tune.grid_search([0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0]),
-                # "truncate_reward" : tune.grid_search([0.0, -10.0, -30.0, -50.0]),
-                # "fit_epochs" : tune.grid_search([25, 50, 100, 200]),
-                # "pessimism_coef" : tune.grid_search([0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0]),
-                # "truncate_reward" : tune.grid_search([0.0, -10.0, -30.0, -50.0]),
-                "fit_epochs" : tune.grid_search([2, 4]),
+                "truncate_reward" : tune.grid_search([0.0, -50.0, -100.0, -200.0]),
+                "fit_epochs" : tune.grid_search([25, 50, 100, 200]),
+                "pessimism_coef" : tune.grid_search([0.2, 1.0, 2.0, 5.0]),
                 "job_data" : job_data,
             },
             resources_per_trial={"gpu": 1 / 4},
