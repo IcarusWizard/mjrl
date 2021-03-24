@@ -391,6 +391,7 @@ if __name__ == '__main__':
     parser.add_argument('--level', type=str, default='medium')
     parser.add_argument('--amount', type=int, default=999)
     parser.add_argument('--mode', type=str, default='tune', choices=['default', 'tune'])
+    parser.add_argument('--trial_per_gpu', type=int, default=4)
     args = parser.parse_args()
 
     task = args.task
@@ -420,7 +421,7 @@ if __name__ == '__main__':
                 "pessimism_coef" : tune.grid_search([0.2, 1.0, 2.0, 5.0]),
                 "job_data" : job_data,
             },
-            resources_per_trial={"gpu": 1 / 4},
+            resources_per_trial={"gpu": 1 / args.trial_per_gpu},
             queue_trials = True,
             metric='mean_score',
             mode='max',
