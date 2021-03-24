@@ -4,7 +4,7 @@
 
 'act_repeat'    :   1,
 'num_iter'      :   1000,
-'eval_rollouts' :   4,
+'eval_rollouts' :   50,
 'num_models'    :   4,
 'save_freq'     :   25,
 'device'        :   'cuda',
