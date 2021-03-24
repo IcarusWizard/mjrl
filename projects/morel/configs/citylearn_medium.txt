@@ -1,0 +1,42 @@
+{
+
+# general inputs
+
+'act_repeat'    :   1,
+'num_iter'      :   1000,
+'eval_rollouts' :   4,
+'num_models'    :   4,
+'save_freq'     :   25,
+'device'        :   'cuda',
+'learn_reward'  :   False,
+'reward_file'   :   'func/citylearn.py',
+'bc_init'       :   True,
+'pessimism_coef':   1.0,
+'truncate_reward' : 0.0,
+'exp_notes'     :   'Example to illustrate MOReL on a NeoRL task.',
+
+# dynamics learning
+
+'hidden_size'   :   (512, 512),
+'activation'    :   'relu',
+'fit_lr'        :   1e-3,
+'fit_wd'        :   0.0,
+'fit_mb_size'   :   256,
+'fit_epochs'    :   25,
+'refresh_fit'   :   False,
+'max_steps'     :   1e8,
+
+# NPG params
+
+'policy_size'   :   (128, 128),
+'step_size'     :   0.02,
+'init_log_std'  :   -0.25,
+'min_log_std'   :   -1.0,
+'gamma'         :   0.999,
+'gae_lambda'    :   0.97,
+'update_paths'  :   50,
+'start_state'   :   'init',
+'horizon'       :   500,
+'npg_hp'        :   dict(FIM_invert_args={'iters': 20, 'damping': 1e-3}),
+
+}
