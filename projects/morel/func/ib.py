@@ -15,7 +15,7 @@ def reward_function(paths):
     CRC = 1.0
 
     fatigue = next_obs[..., -2]
-    consumption = next_obs[:, -1]
+    consumption = next_obs[..., -1]
 
     cost = CRF * fatigue + CRC * consumption
 

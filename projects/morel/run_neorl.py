@@ -1,4 +1,3 @@
-from inspect import Attribute
 from os import environ
 environ['CUDA_DEVICE_ORDER']='PCI_BUS_ID'
 environ['MKL_THREADING_LAYER']='GNU'
@@ -22,7 +21,7 @@ from ray import tune
 from tabulate import tabulate
 
 import mjrl.utils.tensor_utils as tensor_utils
-from mjrl.utils.gym_env import GymEnv
+from mjrl.utils.gym_env import GymEnv, GymEnvCompact
 from mjrl.utils.logger import DataLog
 from mjrl.algos.mbrl.nn_dynamics import WorldModel
 from mjrl.policies.gaussian_mlp import MLP
@@ -48,7 +47,7 @@ def setup_seed(seed=1024):
 
 def neorl2mjrl(dataset):
     paths = []
-    start_index = list(dataset['index'])
+    start_index = list(dataset['index'].astype(int))
     end_index = start_index[1:] + [dataset['obs'].shape[0]]
 
     traj_equal = True
@@ -95,6 +94,7 @@ def run_neorl(task, level, amount, job_data, seed=42):
     env = neorl.make(task)
     dataset, _ = env.get_dataset(data_type=level, train_num=amount)
     raw_paths = neorl2mjrl(dataset)
+    env = GymEnvCompact(env)
     env.spec = AttributeDict(id=task, max_episode_steps=2516 if task=='finance' else 1000)
     env = GymEnv(env)
     env.set_seed(seed)
@@ -370,7 +370,7 @@ def run_neorl(task, level, amount, job_data, seed=42):
             # make observation mask part of policy for easy deployment in environment
             old_in_scale = policy.in_scale
             for pi in [policy, best_policy]: pi.set_transformations(in_scale=1.0)
-            pickle.dump(agent, open(OUT_DIR + '/iterations/agent_' + str(outer_iter) + '.pickle', 'wb'))
+            # pickle.dump(agent, open(OUT_DIR + '/iterations/agent_' + str(outer_iter) + '.pickle', 'wb'))
             pickle.dump(policy, open(OUT_DIR + '/iterations/policy_' + str(outer_iter) + '.pickle', 'wb'))
             pickle.dump(best_policy, open(OUT_DIR + '/iterations/best_policy.pickle', 'wb'))
             agent.to(job_data['device'])
@@ -379,7 +379,7 @@ def run_neorl(task, level, amount, job_data, seed=42):
                              x_scale=float(job_data['act_repeat']), y_scale=1.0, save_loc=OUT_DIR+'/logs/')
 
     # final save
-    pickle.dump(agent, open(OUT_DIR + '/iterations/agent_final.pickle', 'wb'))
+    # pickle.dump(agent, open(OUT_DIR + '/iterations/agent_final.pickle', 'wb'))
     policy.set_transformations(in_scale=1.0)
     pickle.dump(policy, open(OUT_DIR + '/iterations/policy_final.pickle', 'wb'))
 

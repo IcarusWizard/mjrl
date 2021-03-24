@@ -13,7 +13,7 @@ def reward_function(paths):
     index = [25, 32, 38, 45, 52, 59, 66, 73]
     electricity_demand = - next_obs[..., index]
     
-    reward_ = - np.sum(electricity_demand, axis=1)
+    reward_ = - np.sum(electricity_demand, axis=-1)
     reward_ = np.clip(reward_, 0, np.max(reward_))
 
     rewards = reward_ ** 3.0 * 0.00001

@@ -12,6 +12,25 @@ class EnvSpec(object):
         self.action_dim = act_dim
         self.horizon = horizon
 
+class GymEnvCompact:
+    def __init__(self, env):
+        self._env = env
+
+    def __getattr__(self, name):
+        if name == '__getstate__':
+            return lambda: self.__dict__
+        return getattr(self._env, name)
+
+    def reset(self):
+        self.obs = self._env.reset()
+        return self.obs
+
+    def step(self, action):
+        self.obs, r, d, info = self._env.step(action)
+        return self.obs, r, d, info
+
+    def get_obs(self):
+        return self.obs
 
 class GymEnv(object):
     def __init__(self, env, env_kwargs=None,
@@ -25,9 +44,9 @@ class GymEnv(object):
             env = env
         elif callable(env):
             env = env(**env_kwargs)
-        else:
-            print("Unsupported environment format")
-            raise AttributeError
+        # else:
+        #     print("Unsupported environment format")
+        #     raise AttributeError
 
         self.env = env
         self.env_id = env.spec.id
@@ -118,7 +137,10 @@ class GymEnv(object):
         try:
             return self.obs_mask * self.env.env.get_obs()
         except:
-            return self.obs_mask * self.env.env._get_obs()
+            try:
+                return self.obs_mask * self.env.get_obs()
+            except:
+                return self.obs_mask * self.env.env._get_obs()
 
     def get_env_infos(self):
         try:
