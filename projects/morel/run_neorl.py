@@ -1,3 +1,4 @@
+from inspect import Attribute
 from os import environ
 environ['CUDA_DEVICE_ORDER']='PCI_BUS_ID'
 environ['MKL_THREADING_LAYER']='GNU'
@@ -31,6 +32,10 @@ from mjrl.utils.make_train_plots import make_train_plots
 from mjrl.algos.mbrl.nn_dynamics import WorldModel
 from mjrl.algos.mbrl.model_based_npg import ModelBasedNPG
 from mjrl.algos.mbrl.sampling import evaluate_policy
+
+class AttributeDict(dict):
+    __getattr__ = dict.__getitem__
+    __setattr__ = dict.__setitem__
 
 SEEDS = [16, 42, 1024]
 
@@ -90,6 +95,7 @@ def run_neorl(task, level, amount, job_data, seed=42):
     env = neorl.make(task)
     dataset, _ = env.get_dataset(data_type=level, train_num=amount)
     raw_paths = neorl2mjrl(dataset)
+    env.spec = AttributeDict(id=task, max_episode_steps=2516 if task=='finance' else 1000)
     env = GymEnv(env)
     env.set_seed(seed)
 
